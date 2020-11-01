@@ -10,7 +10,8 @@ const port = 3000
 
 app.listen(port, () => console.log(`Express server listening on port ${port}.`))
 
-let items = ['test 1', 'test 2', 'test 3']
+let items = []
+let workItems = []
 
 app.get('/', (req, res) => {
     const options = {
@@ -18,11 +19,29 @@ app.get('/', (req, res) => {
         day: 'numeric',
         month: 'long'
     }
-    const today = (new Date()).toLocaleDateString('en-CA', options)
-    res.render('list', { today, items })
+    const listTitle = (new Date()).toLocaleDateString('en-CA', options)
+    res.render('list', { listTitle, items })
 })
 
 app.post('/', (req, res) => {
-    items.push(req.body.newItem)
-    res.redirect('/')
+    if (req.body.list === 'Work List') {
+        workItems.push(req.body.newItem)
+        res.redirect('/work')
+    } else {
+        items.push(req.body.newItem)
+        res.redirect('/')
+    }
+})
+
+app.get('/work', (req, res) => {
+    res.render('list', { listTitle: 'Work List', items: workItems })
+})
+
+app.post('/work', (req, res) => {
+    workItems.push(req.body.newItem)
+    res.redirect('/work')
+})
+
+app.get('/about', (req, res) => {
+    res.render('about')
 })

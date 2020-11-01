@@ -1,33 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('header') -%>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/styles.css">
-    <title>To-Do List</title>
-</head>
+<div class="box" id="heading">
+    <h1><%= listTitle %></h1>
+</div>
 
-<body>
-
-    <div class="box" id="heading">
-        <h1><%= today %></h1>
+<div class="box">
+    <% for (const item of items) { %>
+    <div class="item">
+        <input type="checkbox">
+        <p><%= item %></p>
     </div>
+    <% } %>
 
-    <div class="box">
-        <% for (const item of items) { %>
-        <div class="item">
-            <input type="checkbox">
-            <p><%= item %></p>
-        </div>
-        <% } %>
+    <form class="item" action="/" method="post">
+        <input type="text" id="newItem" name="newItem" placeholder="Enter new item" aria-label="Enter a new item">
+        <button type="submit" name="list" value="<%= listTitle %>">+</button>
+    </form>
+</div>
 
-        <form class="item" action="/" method="post">
-            <input type="text" id="newItem" name="newItem" placeholder="Enter new item" aria-label="Enter a new item">
-            <button type="submit">+</button>
-        </form>
-    </div>
-
-</body>
-
-</html>
+<%- include('footer') -%>
