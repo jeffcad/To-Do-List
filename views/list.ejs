@@ -4,15 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
     <title>To-Do List</title>
 </head>
 
 <body>
-    <% if (today === 'Saturday' || today === 'Sunday') { %>
-    <h1 style="color: purple"><%= today %> To-Do List</h1>
-    <% } else { %>
-    <h1 style="color: blue"><%= today %> To-Do List</h1>
-    <% } %>
+
+    <div class="box" id="heading">
+        <h1><%= today %></h1>
+    </div>
+
+    <div class="box">
+        <% for (const item of items) { %>
+        <div class="item">
+            <input type="checkbox">
+            <p><%= item %></p>
+        </div>
+        <% } %>
+
+        <form class="item" action="/" method="post">
+            <input type="text" id="newItem" name="newItem" placeholder="Enter new item" aria-label="Enter a new item">
+            <button type="submit">+</button>
+        </form>
+    </div>
+
 </body>
 
 </html>
