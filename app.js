@@ -1,5 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const date = require(__dirname + '/date.js')
 
 const app = express()
 app.set('view engine', 'ejs')
@@ -10,16 +11,11 @@ const port = 3000
 
 app.listen(port, () => console.log(`Express server listening on port ${port}.`))
 
-let items = []
-let workItems = []
+const items = []
+const workItems = []
 
 app.get('/', (req, res) => {
-    const options = {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long'
-    }
-    const listTitle = (new Date()).toLocaleDateString('en-CA', options)
+    const listTitle = date.getDate()
     res.render('list', { listTitle, items })
 })
 
