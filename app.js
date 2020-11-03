@@ -9,24 +9,16 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static('public'))
 
 mongoose.connect('mongodb://localhost:27017/todolistDB',
-    { useNewUrlParser: true })
+    { useNewUrlParser: true, useUnifiedTopology: true })
 
 const itemsSchema = { name: String }
 const Item = new mongoose.model('Item', itemsSchema)
 
-//Create default items for database
-const item1 = new Item({ name: 'Welcome to the To-Do List app' })
-const item2 = new Item({ name: 'Click the + button to add a new item' })
-const item3 = new Item({ name: '<-- Click the checkbox to delete an item' })
-
+// Create default items for database
+const item1 = new Item({ name: 'Welcome to the To-Do List app!' })
+const item2 = new Item({ name: 'Click the + button to add a new item.' })
+const item3 = new Item({ name: '<== Click the checkbox to delete an item.' })
 const defaultItems = [item1, item2, item3]
-Item.insertMany(defaultItems, (err) => {
-    if (err) {
-        console.log(err)
-    } else {
-        console.log('Default items added to DB!')
-    }
-})
 
 const port = 3000
 
@@ -34,7 +26,25 @@ app.listen(port, () => console.log(`Express server listening on port ${port}.`))
 
 app.get('/', (req, res) => {
     const listTitle = date.getDate()
-    res.render('list', { listTitle, items })
+
+    Item.find({}, (err, items) => {
+        if (err) {
+            console.log(err)
+        } else {
+            if (items.length === 0) {
+                Item.insertMany(defaultItems, (err) => {
+                    if (err) {
+                        console.log(err)
+                    } else {
+                        console.log('Default items added to DB!')
+                    }
+                    res.redirect('/')
+                })
+            } else {
+                res.render('list', { listTitle, items })
+            }
+        }
+    })
 })
 
 app.post('/', (req, res) => {
