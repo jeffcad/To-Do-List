@@ -48,22 +48,12 @@ app.get('/', (req, res) => {
 })
 
 app.post('/', (req, res) => {
-    if (req.body.list === 'Work List') {
-        workItems.push(req.body.newItem)
-        res.redirect('/work')
-    } else {
-        items.push(req.body.newItem)
-        res.redirect('/')
-    }
+    Item.create({ name: req.body.newItem })
+    res.redirect('/')
 })
 
 app.get('/work', (req, res) => {
     res.render('list', { listTitle: 'Work List', items: workItems })
-})
-
-app.post('/work', (req, res) => {
-    workItems.push(req.body.newItem)
-    res.redirect('/work')
 })
 
 app.get('/about', (req, res) => {
