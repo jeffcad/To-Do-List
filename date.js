@@ -1,4 +1,3 @@
-
 exports.getDate = function () {
     const options = {
         weekday: 'long',
