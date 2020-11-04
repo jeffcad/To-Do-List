@@ -62,8 +62,21 @@ app.get('/', (req, res) => {
 })
 
 app.post('/', (req, res) => {
-    Item.create({ name: req.body.newItem })
-    res.redirect('/')
+    const { newItem, list } = req.body
+    const item = new Item({
+        name: newItem
+    })
+
+    if (list === date.getDate()) {
+        item.save()
+        res.redirect('/')
+    } else {
+        List.findOne({ name: list }, (err, foundList) => {
+            foundList.items.push(item)
+            foundList.save()
+            res.redirect(`/${list}`)
+        })
+    }
 })
 
 app.post('/delete', (req, res) => {
