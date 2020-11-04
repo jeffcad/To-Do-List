@@ -11,7 +11,12 @@ app.use(express.static('public'))
 mongoose.connect('mongodb://localhost:27017/todolistDB',
     { useNewUrlParser: true, useUnifiedTopology: true })
 
-const itemsSchema = { name: String }
+const itemsSchema = {
+    name: {
+        type: String,
+        required: [true, "To-Do item can't be blank."]
+    }
+}
 const Item = new mongoose.model('Item', itemsSchema)
 
 // Create default items for database
@@ -49,6 +54,18 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
     Item.create({ name: req.body.newItem })
+    res.redirect('/')
+})
+
+app.post('/delete', (req, res) => {
+    const checkedItemId = req.body.checkbox
+    Item.findByIdAndRemove(checkedItemId, (err) => {
+        if (err) {
+            console.log(err)
+        } else {
+            console.log('Item deletion successful!')
+        }
+    })
     res.redirect('/')
 })
 
