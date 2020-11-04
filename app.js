@@ -25,6 +25,15 @@ const item2 = new Item({ name: 'Click the + button to add a new item.' })
 const item3 = new Item({ name: '<== Click the checkbox to delete an item.' })
 const defaultItems = [item1, item2, item3]
 
+const listSchema = {
+    name: {
+        type: String,
+        required: [true, "List title can't be blank."]
+    },
+    items: [itemsSchema]
+}
+const List = new mongoose.model('List', listSchema)
+
 const port = 3000
 
 app.listen(port, () => console.log(`Express server listening on port ${port}.`))
@@ -58,8 +67,7 @@ app.post('/', (req, res) => {
 })
 
 app.post('/delete', (req, res) => {
-    const checkedItemId = req.body.checkbox
-    Item.findByIdAndRemove(checkedItemId, (err) => {
+    Item.findByIdAndRemove(req.body.checkbox, (err) => {
         if (err) {
             console.log(err)
         } else {
@@ -69,8 +77,25 @@ app.post('/delete', (req, res) => {
     res.redirect('/')
 })
 
-app.get('/work', (req, res) => {
-    res.render('list', { listTitle: 'Work List', items: workItems })
+app.get('/:customListName', (req, res) => {
+    const customListName = req.params.customListName
+    List.findOne({ name: customListName }, (err, foundList) => {
+        if (err) {
+            console.log(err)
+        } else {
+            if (!foundList) {
+                const list = new List({
+                    name: customListName,
+                    items: defaultItems
+                })
+                list.save((err) => {
+                    res.redirect(`/${customListName}`)
+                })
+            } else {
+                res.render('list', { listTitle: foundList.name, items: foundList.items })
+            }
+        }
+    })
 })
 
 app.get('/about', (req, res) => {
