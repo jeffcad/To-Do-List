@@ -4,13 +4,15 @@ const mongoose = require('mongoose')
 const lodash = require('lodash')
 const date = require(__dirname + '/date.js')
 
+const dotenv = require('dotenv')
+dotenv.config()
+
 const app = express()
 app.set('view engine', 'ejs')
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static('public'))
 
-mongoose.connect('mongodb://localhost:27017/todolistDB',
-    { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(`${process.env.MONGODB_URI}`, { useNewUrlParser: true, useUnifiedTopology: true })
 
 const itemsSchema = {
     name: {
@@ -35,7 +37,7 @@ const listSchema = {
 }
 const List = new mongoose.model('List', listSchema)
 
-const port = 3000
+const port = process.env.PORT || 3000
 
 app.listen(port, () => console.log(`Express server listening on port ${port}.`))
 
